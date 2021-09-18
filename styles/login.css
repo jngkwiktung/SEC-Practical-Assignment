@@ -1,0 +1,197 @@
+/* body>header {
+    grid-area: header;
+}
+
+body>article {
+    grid-area: content;
+}
+
+body>footer {
+    grid-area: footer;
+} */
+
+body {
+    /* /* margin: 0; */
+    /* display: grid;
+    grid-template-areas: '. header .' '. content .' '. footer .'; */
+    /* grid-gap: 0; */
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 130%;
+    background-color: #354152;
+    color: #ffffff;
+    text-align: center;
+}
+
+
+/* form {
+    display: inline-block;
+} */
+
+header {
+    background-color: #354152;
+    color: #ffffff;
+    text-align: center;
+    list-style-type: none;
+}
+
+footer {
+    font-size: 80%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    background-color: transparent;
+    color: #ffffff;
+}
+
+
+/* article {
+    top: 50%;
+} */
+
+.formcontainer {
+    /* background-color: #a7a7a78e; */
+    box-shadow: 0 0 250px #000;
+    padding: 20pt;
+    border-radius: 5pt;
+    /* margin: 5pt 35% 5pt 35%; */
+    max-width: 300pt;
+    min-width: 300pt;
+    /* display: table-cell; */
+    margin: auto;
+    /* vertical-align: middle; */
+    /* display: flex;
+    position: absolute;
+    top: 50%; */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+}
+
+a {
+    font-size: 80%;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #bdbdbd;
+}
+
+.aligncenter {
+    text-align: center;
+}
+
+.secondcol {
+    width: 71%;
+    float: left;
+    margin-top: 15pt;
+}
+
+.firstcol {
+    width: 29%;
+    float: left;
+    text-align: left;
+    margin-top: 8pt;
+}
+
+.aftercol:after {
+    display: table;
+    content: "";
+    clear: both;
+}
+
+label {
+    padding: 12pt 13pt 12pt 0;
+    display: inline-block;
+}
+
+input[type=text],
+input[type=password] {
+    width: 92%;
+    padding: 7pt;
+    /* border: 1pt solid #dddddd;
+    border-radius: 4pt; */
+    resize: vertical;
+    border: none;
+    border-radius: 9pt;
+    /* background-color: transparent; */
+}
+
+input[type=submit] {
+    font-weight: bold;
+    color: #fff;
+    padding: 10pt 20pt 10pt 20pt;
+    border: none;
+    /* border-radius: 4pt; */
+    border-radius: 9pt;
+    cursor: pointer;
+    text-align: center;
+    background-image: linear-gradient(160deg, #8ceabb 0%, #378f7b 100%);
+}
+
+input[type=submit]:hover {
+    /* background-color: #1f2d79; */
+    background-image: linear-gradient(160deg, #71b894 0%, #265e51 100%);
+}
+
+
+/* form resize after page width is shrunk */
+
+@media screen and (max-width: 1000pt) {
+    .firstcol,
+    .secondcol {
+        text-align: center;
+        width: 100%;
+        margin: auto;
+        margin-top: 0;
+    }
+    .formcontainer {
+        max-width: 250pt;
+        min-width: 250pt;
+    }
+    label {
+        padding: 12pt 0 12pt 0;
+    }
+    input[type=text],
+    input[type=password] {
+        text-align: center;
+        width: 94%;
+    }
+}
+
+
+/* button resize after page width is shrunk */
+
+@media screen and (max-width: 1000pt) {
+    input[type=submit] {
+        width: 100%;
+        margin: 10pt auto 10pt auto;
+        margin-top: 0;
+    }
+}
+
+.noselect {
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Old versions of Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
+}
+
+#loginForm .error {
+    color: #fd2600;
+    display: inline;
+    padding: 5pt 5pt 0 0;
+    font-size: 70%;
+}
