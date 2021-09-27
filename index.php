@@ -28,7 +28,7 @@
                 <div class="logo">
                     <img src="images/app_icon.png" width="125px">
                 </div>
-
+                
                 <!--navbar links-->
                 <nav>
                     <ul>
@@ -37,7 +37,11 @@
                         <li><a href="">About</a></li>
                         <li><a href="">Contact</a></li>
                         <li><a href="">Account</a></li>
-                        <li><a href="">Logout</a></li>
+                        <li>
+                        <form id="logoutForm" action="/SEC-Practical-Assignment/logout.php" method="post">
+                            <input name="logout" id="logout" type="submit" value="Logout">
+                        </form>
+                        </li>
                     </ul>
                 </nav>
 
@@ -48,9 +52,6 @@
         </div>
     </div>
 
-    <form id="logoutForm" action="/SEC-Practical-Assignment/logout.php" method="post">
-        <input name="logout" id="logout" type="submit" value="Logout">
-    </form>
 
     <!------- featured PRODUCTS -------->
     <div class="small-container">
