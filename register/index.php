@@ -22,7 +22,7 @@
                     $currentUser = new User($randomNumber, htmlspecialchars(trim($_POST['username'])), hash("sha256", htmlspecialchars(trim($_POST['pw'])), false));
                     $userCrud->create($currentUser);
                     $_SESSION[USER_SESSION_KEY] = $currentUser;
-                    header('Location: /SEC-Practical-Assignment/');
+                    header('Location: ../');
                     exit();
                 } else {
                     $usernameExistsError = true;

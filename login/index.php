@@ -8,7 +8,7 @@
         $currentUser = $userCrud->isLogin($_POST['username'], hash("sha256", $_POST['pw'], false));
         if (isset($currentUser)) {
             $_SESSION[USER_SESSION_KEY] = $currentUser;
-            header('Location: /SEC-Practical-Assignment/');
+            header('Location: ../');
             exit();
         } else {
             $loginError = true;

@@ -38,7 +38,7 @@
                         <li><a href="">Contact</a></li>
                         <li><a href="">Account</a></li>
                         <li>
-                        <form id="logoutForm" action="/SEC-Practical-Assignment/logout.php" method="post">
+                        <form id="logoutForm" action="logout.php" method="post">
                             <input name="logout" id="logout" type="submit" value="Logout">
                         </form>
                         </li>
