@@ -15,10 +15,13 @@ PHP Website Pages files:
 Other files:
 ```bash
 ├── authorise.inc.php             - Checks if the user is logged in, otherwise it heads to the login page
-├── functions.inc.php             - Keeps the logged-in user details in current session
+├── functions.inc.php             - Keeps the logged-in user details, server public & private keys in current session
 ├── sqlConnection.inc.php         - Establishes a connection to SQLite database
 ├── database.db                   - SQLite database file
 ├── logout.php                    - To log the user out and redirect to login page.
+├── functions.js                  - Contains JavaScripts functions for encryption and description and gererating client side RSA keys
+├── rsa.js                        - RSA JavaScript Library
+├── sha256.js                     - SHA-256 JavaScript Library
 ├── .gitignore                    - What git to ignore when commiting
 └── README.md                     - This file ;)
 ```
@@ -32,6 +35,7 @@ Folders:
 ├── /model                        - All models (user, product, cartItem, shoppingCart, order) representing a parallel to the database tables
 ├── /order                        - Contains Order page
 ├── /register                     - Contains Register page
+├── /scripts                      - Contains all JavaScript files
 ├── /shoppingCart                 - Contains Register page
 └── /styles                       - CSS Style-Sheets
 ```
