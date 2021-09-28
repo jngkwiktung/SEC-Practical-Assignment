@@ -2,33 +2,45 @@
 <?php require_once('../includes/functions.inc.php'); ?>
 <?php require_once('../model/user.php'); ?>
 <?php
+    if (!isset($_SESSION[PRIVATE_KEY]) && !isset($_SESSION[PUBLIC_KEY])) {
+        generatePrivatePublicKey();
+    }
     $usernameExistsError = false;
     $usernameLengthError = false;
     $usernameNull = false;
     $passwordNull = false;
     if(isset($_POST['register'])) {
         $userCrud = new UserCrud();
-        if ($_POST['username'] == '') {
+        openssl_private_decrypt(base64_decode($_POST['username']), $decryptedUsername, $_SESSION[PRIVATE_KEY]);
+        openssl_private_decrypt(base64_decode($_POST['pw']), $decryptedPassword, $_SESSION[PRIVATE_KEY]);
+        $passwordSplit = explode("&&&&&", $decryptedPassword);
+        $userTimestamp = $passwordSplit[count($passwordSplit)-1];
+        $serverTimeStamp = time();
+        if ($decryptedUsername == '') {
             $usernameNull = true;
         }
-        if ($_POST['pw'] == '') {
+        if ($passwordSplit[0] == '') {
             $passwordNull = true;
         }
-
-        if (!$usernameNull && !$passwordNull) {
-            if (strlen($_POST['username']) <= 20) {
-                if (!$userCrud->usernameExists(htmlspecialchars(trim($_POST['username'])))) {
-                    $randomNumber = rand();
-                    $currentUser = new User($randomNumber, htmlspecialchars(trim($_POST['username'])), hash("sha256", htmlspecialchars(trim($_POST['pw'])), false));
-                    $userCrud->create($currentUser);
-                    $_SESSION[USER_SESSION_KEY] = $currentUser;
-                    header('Location: ../');
-                    exit();
+        if(abs($serverTimeStamp - $userTimestamp) >= 150) {
+            echo("<p>Your session has expired</p>");
+            exit();
+        } else {
+            if (!$usernameNull && !$passwordNull) {
+                if (strlen($decryptedUsername) <= 20) {
+                    if (!$userCrud->usernameExists(htmlspecialchars(trim($decryptedUsername)))) {
+                        $randomNumber = rand();
+                        $currentUser = new User($randomNumber, htmlspecialchars(trim($decryptedUsername)), $passwordSplit[0], false);
+                        $userCrud->create($currentUser);
+                        $_SESSION[USER_SESSION_KEY] = $currentUser;
+                        header('Location: ../');
+                        exit();
+                    } else {
+                        $usernameExistsError = true;
+                    }
                 } else {
-                    $usernameExistsError = true;
+                    $usernameLengthError = true;
                 }
-            } else {
-                $usernameLengthError = true;
             }
         }
         
@@ -44,6 +56,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="../images/app_icon.png">
     <link rel="stylesheet" type="text/css" href="../styles/register.css">
+    <script type="text/javascript" src="../scripts/sha256.js"></script>
+    <script type="text/javascript" src="../scripts/rsa.js"></script>
+    <script type="text/javascript" src="../scripts/functions.js"></script>
 </head>
 
 <body>
@@ -59,15 +74,7 @@
                         <label for="username">Username</label>
                     </div>
                     <div class="secondcol">
-                        <input type="text" id="username" name="username" 
-                        <?php 
-                            if (isset($_POST['register'])) {
-                                echo 'value="'.$_POST['username'].'"';
-                            } else {
-                                echo 'value=""';
-                            }
-                        ?>
-                        required maxlength="20">
+                        <input type="text" id="username" name="username" required maxlength="20">
                     </div>
                     <?php 
                         if ($usernameExistsError) {
@@ -86,15 +93,7 @@
                     </div>
 
                     <div class="secondcol">
-                        <input type="password" id="pw" name="pw" 
-                        <?php 
-                            if (isset($_POST['register'])) {
-                                echo 'value="'.$_POST['pw'].'"';
-                            } else {
-                                echo 'value=""';
-                            }
-                        ?>
-                        required>
+                        <input type="password" id="pw" name="pw" required>
                     </div>
                     <?php 
                         if ($passwordNull) {
@@ -107,7 +106,7 @@
                     <a href="../login/">
                         <p>Cancel</p>
                     </a>
-                    <input name="register" id="register" type="submit" value="Register">
+                    <input name="register" id="register" type="submit" value="Register" onclick="encryptUsnPass(`<?php echo getPublicKey();?>`)">
                 </div>
             </form>
         </div>

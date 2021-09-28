@@ -38,7 +38,7 @@ Folders:
 # ER Diagram of database
 ![img.png](images/er_diagram.png)
 <br>
- - A user can have many shopping carts but can only view a shopping cart page that does not have a completed transaction
+ - A user can have many shopping carts but can only view a shopping cart that does not have a completed transaction
  - A user does not need to have shopping cart(s) but a shopping cart has to be linked to a user
  - A shopping cart can have many products, but can have no products as well
  - Products can be part of many shopping carts, but does not need to
@@ -50,8 +50,12 @@ Folders:
 # Running the code
 1. Download XAMPP
 2. Have this project within XAMPP as in C:\xampp\htdocs\SEC-Practical-Assignment\
-3. Run XAMPP Control Panel and start Apache
-4. Go to: http://localhost/SEC-Practical-Assignment/
+3. Run XAMPP Control Panel
+4. Click on 'Config' next to Apache, then select 'PHP (php.ini)'
+5. Go to around Line 900 and find where it says ';extension=openssl'
+6. Remove the semicolon ';' and save the file
+7. Close the file and start Apache in the Control Panel
+8. Go to: http://localhost/SEC-Practical-Assignment/
 
 # Opening & Accessing the SQLite database
 1. Download SQLite Studio

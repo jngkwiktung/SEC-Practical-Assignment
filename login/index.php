@@ -2,16 +2,29 @@
 <?php require_once('../includes/functions.inc.php'); ?>
 <?php require_once('../model/user.php'); ?>
 <?php
+    if (!isset($_SESSION[PRIVATE_KEY]) && !isset($_SESSION[PUBLIC_KEY])) {
+        generatePrivatePublicKey();
+    }
     $loginError = false;
     if(isset($_POST['login'])) {
         $userCrud = new UserCrud();
-        $currentUser = $userCrud->isLogin($_POST['username'], hash("sha256", $_POST['pw'], false));
-        if (isset($currentUser)) {
-            $_SESSION[USER_SESSION_KEY] = $currentUser;
-            header('Location: ../');
+        openssl_private_decrypt(base64_decode($_POST['username']), $decryptedUsername, $_SESSION[PRIVATE_KEY]);
+        openssl_private_decrypt(base64_decode($_POST['pw']), $decryptedPassword, $_SESSION[PRIVATE_KEY]);
+        $passwordSplit = explode("&&&&&", $decryptedPassword);
+        $userTimestamp = $passwordSplit[count($passwordSplit)-1];
+        $serverTimeStamp = time();
+        if(abs($serverTimeStamp - $userTimestamp) >= 150) {
+            echo("<p>Your session has expired</p>");
             exit();
         } else {
-            $loginError = true;
+            $currentUser = $userCrud->isLogin($decryptedUsername, $passwordSplit[0]);
+            if (isset($currentUser)) {
+                $_SESSION[USER_SESSION_KEY] = $currentUser;
+                header('Location: ../');
+                exit();
+            } else {
+                $loginError = true;
+            }
         }
     }
 ?>
@@ -24,10 +37,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="../images/app_icon.png">
     <link rel="stylesheet" type="text/css" href="../styles/login.css">
+    <script type="text/javascript" src="../scripts/sha256.js"></script>
+    <script type="text/javascript" src="../scripts/rsa.js"></script>
+    <script type="text/javascript" src="../scripts/functions.js"></script>
 </head>
 
 <body>
-
     <header>
         <br>
         <h1 class="noselect"><b>Login</b></h1>
@@ -40,15 +55,7 @@
                         <label for="username">Username</label>
                     </div>
                     <div class="secondcol">
-                        <input type="text" id="username" name="username" 
-                        <?php 
-                            if (isset($_POST['login'])) {
-                                echo 'value="'.$_POST['username'].'"';
-                            } else {
-                                echo 'value=""';
-                            }
-                        ?>
-                        required>
+                        <input type="text" id="username" name="username" required>
                     </div>
                     <?php 
                         if ($loginError) {
@@ -63,15 +70,7 @@
                     </div>
 
                     <div class="secondcol">
-                        <input type="password" id="pw" name="pw" 
-                        <?php 
-                            if (isset($_POST['login'])) {
-                                echo 'value="'.$_POST['pw'].'"';
-                            } else {
-                                echo 'value=""';
-                            }
-                        ?>
-                        required>
+                        <input type="password" id="pw" name="pw" required>
                     </div>
                     <?php 
                         if ($loginError) {
@@ -84,7 +83,7 @@
                     <a href="../register/">
                         <p>Don't have an account? Click here!</p>
                     </a>
-                    <input id="login" name="login" type="submit" value="Login">
+                    <input id="login" name="login" type="submit" value="Login" onclick="encryptUsnPass(`<?php echo getPublicKey();?>`)">
                 </div>
             </form>
         </div>

@@ -15,6 +15,9 @@
     <link rel="icon" href="images/app_icon.png">
     <link rel="stylesheet" type="text/css" href="styles/main.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script type="text/javascript" src="scripts/sha256.js"></script>
+    <script type="text/javascript" src="scripts/rsa.js"></script>
+    <script type="text/javascript" src="scripts/functions.js"></script>
 
 </head>
 
@@ -39,7 +42,7 @@
                         <li><a href="">Account</a></li>
                         <li>
                         <form id="logoutForm" action="logout.php" method="post">
-                            <input name="logout" id="logout" type="submit" value="Logout">
+                            <input name="logout" id="logout" type="submit" value="Logout" onclick="removePrivatePublicKey()">
                         </form>
                         </li>
                     </ul>
