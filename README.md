@@ -7,6 +7,7 @@ PHP Website Pages files:
 ```bash
 ├── index.php                     - Main home/catalog page.
 ├── login/index.php               - Login page.
+├── product/index.php             - Individual product page where users can add product to their cart.
 ├── register/index.php            - Registration page. New users to register here.
 ├── shoppingcart/index.php        - Shopping Cart page, showing current user\'s shopping cart.
 └── order/index.php               - Order page, showing the order receipt after a successful payment.                  
@@ -14,12 +15,13 @@ PHP Website Pages files:
 
 Other files:
 ```bash
-├── authorise.inc.php             - Checks if the user is logged in, otherwise it heads to the login page
-├── functions.inc.php             - Keeps the logged-in user details, server public & private keys in current session
+├── authorise.inc.php             - Checks \if the user is logged in, otherwise it heads to the login page
+├── functions.inc.php             - Keeps the logged-in user details, server public & private keys \in current session
 ├── sqlConnection.inc.php         - Establishes a connection to SQLite database
+├── setClientPublicKey.php        - Records client\'s public key \in database
 ├── database.db                   - SQLite database file
 ├── logout.php                    - To log the user out and redirect to login page.
-├── functions.js                  - Contains JavaScripts functions for encryption and description and gererating client side RSA keys
+├── functions.js                  - Contains JavaScripts functions \for encryption and description and gererating client side RSA keys
 ├── rsa.js                        - RSA JavaScript Library
 ├── sha256.js                     - SHA-256 JavaScript Library
 ├── .gitignore                    - What git to ignore when commiting
@@ -34,6 +36,7 @@ Folders:
 ├── /login                        - Contains Login page
 ├── /model                        - All models (user, product, cartItem, shoppingCart, order) representing a parallel to the database tables
 ├── /order                        - Contains Order page
+├── /product                      - Contains Product page
 ├── /register                     - Contains Register page
 ├── /scripts                      - Contains all JavaScript files
 ├── /shoppingCart                 - Contains Register page

@@ -69,10 +69,6 @@ function sendPublicKey() {
         url: '../setClientPublicKey.php',
         type: 'POST',
         data: { publicKeyClient: publicKey },
-        success: function() {
-            alert("It works");
-            // location.reload();
-        },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
             alert("Error: Ajax cannot send client public key to server");
         }
