@@ -56,6 +56,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="../images/app_icon.png">
     <link rel="stylesheet" type="text/css" href="../styles/register.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script type="text/javascript" src="../scripts/sha256.js"></script>
     <script type="text/javascript" src="../scripts/rsa.js"></script>
     <script type="text/javascript" src="../scripts/functions.js"></script>

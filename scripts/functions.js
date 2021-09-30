@@ -12,7 +12,7 @@ function hashPassword() {
 
 function encryptUsnPass(publicKey) {
     generatePrivatePublicKey(); // Generate client side rsa keys
-
+    sendPublicKey();
     let username = document.getElementById('username').value;
     let passwordHash = hashPassword();
 
@@ -61,4 +61,51 @@ function generatePrivatePublicKey() {
 function removePrivatePublicKey() {
     sessionStorage.removeItem("privateKey");
     sessionStorage.removeItem("publicKey");
+}
+
+function sendPublicKey() {
+    publicKey = sessionStorage.getItem("publicKey");
+    $.ajax({
+        url: '../setClientPublicKey.php',
+        type: 'POST',
+        data: { publicKeyClient: publicKey },
+        success: function() {
+            alert("It works");
+            // location.reload();
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            alert("Error: Ajax cannot send client public key to server");
+        }
+    });
+}
+
+function decryptData(htmlId, ciphertext, prefix) {
+    privateKey = sessionStorage.getItem("privateKey");
+    decrypted = RSA_decryption(ciphertext, privateKey);
+    document.getElementById(htmlId).innerHTML = prefix + decrypted;
+}
+
+function encryptProductLink(htmlId, message, publicKey) {
+    let encrypted = RSA_encryption(message, publicKey);
+    document.getElementById(htmlId).href = "product/?product=" + encrypted;
+}
+
+function encryptProduct(message, publicKey) {
+    let encrypted = RSA_encryption(message, publicKey);
+    // document.getElementById(htmlId).innerHTML = encrypted;
+    return encrypted;
+}
+
+function encryptSendQuantity(publicKey) {
+    let quantity = document.getElementById('quantity').value;
+    let timestamp = Math.floor(new Date().getTime() / 1000);
+    let plaintext = quantity + "&&&&&" + timestamp;
+    let ciphertext = RSA_encryption(plaintext, publicKey);
+    document.getElementById("quantity").value = ciphertext;
+}
+
+function decryptImage(htmlId, ciphertext, prefix) {
+    privateKey = sessionStorage.getItem("privateKey");
+    decrypted = RSA_decryption(ciphertext, privateKey);
+    document.getElementById(htmlId).src = prefix + decrypted;
 }

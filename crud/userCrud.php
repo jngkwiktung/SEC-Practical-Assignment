@@ -1,6 +1,11 @@
 <?php
-    require_once('../includes/sqlConnection.inc.php');
-    require_once('../model/user.php');
+    if (file_exists(('../includes/sqlConnection.inc.php'))) {
+        require_once('../includes/sqlConnection.inc.php');
+        require_once('../model/user.php');
+    } else {
+        require_once('includes/sqlConnection.inc.php');
+        require_once('model/user.php');
+    }
 
     class UserCrud {
         
@@ -58,7 +63,7 @@
                 $stmt = $pdo->prepare("SELECT * FROM USER WHERE USERNAME = ? AND PASSWORD = ?");
                 $stmt->execute([$username, $password]);
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    return new User ($row["USER_ID"], $row["USERNAME"], $row["PASSWORD"]);
+                    return new User($row["USER_ID"], $row["USERNAME"], $row["PASSWORD"]);
                 }
                 return null;
 

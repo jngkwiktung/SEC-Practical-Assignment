@@ -4,7 +4,12 @@
 
         public function connect() {
             if ($this->pdo == null) {
-                $this->pdo = new PDO("sqlite:../database.db");
+                if (file_exists(('../includes/sqlConnection.inc.php'))) {
+                    $this->pdo = new PDO("sqlite:../database.db");
+
+                } else {
+                    $this->pdo = new PDO("sqlite:database.db");
+                }
             }
             return $this->pdo;
         }

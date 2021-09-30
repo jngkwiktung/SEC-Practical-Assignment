@@ -2,7 +2,11 @@
     require_once('functions.inc.php');
 
     if(!isUserLoggedIn()) {
-        header('Location: ../SEC-Practical-Assignment/login/');
+        if (file_exists(('../login/index.php'))) {
+            header('Location: ../login/');
+        } else {
+            header('Location: login/');
+        }
         exit();
     }
 ?>

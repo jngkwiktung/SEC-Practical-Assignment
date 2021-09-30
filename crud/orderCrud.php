@@ -66,4 +66,20 @@ class OrderCrud
             error_log($e->getMessage());
         }
     }
+
+    public function getOrderByCartId($cartId) {
+        try {
+            $pdo = (new SQLConnection())->connect();
+            $stmt = $pdo->prepare("SELECT * FROM ORDER WHERE CART_ID = ?");
+            $stmt->execute([$cartId]);
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                return new Order($row["ORDER_ID"], $row["CART_ID"], $row["TOTAL"], $row["ADDRESS"], $row["CREDIT_CARD"], $row["TIMESTAMP"]);
+            }
+            return null;
+
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            return null;
+        }
+    }
 }

@@ -2,6 +2,7 @@
     const USER_SESSION_KEY = 'user'; // Stores user logged-in object
     const PRIVATE_KEY = 'private_key';
     const PUBLIC_KEY = 'public_key';
+    const CLIENT_PUBLIC_KEY = 'client_public_key';
     session_start();
 
 
