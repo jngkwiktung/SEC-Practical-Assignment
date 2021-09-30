@@ -84,7 +84,7 @@
 
 <head>
 
-    <title id="title">Error | Ecommerce Website Design</title>
+    <title id="title"></title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
