@@ -1,5 +1,5 @@
 # SEC-Practical-Assignment
-Practical Assignment code for the SEC Project. This has been implemented and done by Jeremy Ng Kwik Tung, Steven Harja, Wilbert Ongosari and Aman Khan. The application is a simple shopping website written using PHP, HTML and CSS.
+Practical Assignment code for the SEC Project. This has been implemented and done by Jeremy Ng Kwik Tung, Steven Harja, Wilbert Ongosari and Aman Khan. The application is a simple shopping website written using PHP, JavaScript, HTML and CSS.
 
 * Test Account Login Details: Username = test; Password = test
 
@@ -18,11 +18,13 @@ Other files:
 ├── authorise.inc.php             - Checks if the user is logged in, otherwise it heads to the login page
 ├── functions.inc.php             - Keeps the logged-in user details, server public & private keys in current session
 ├── sqlConnection.inc.php         - Establishes a connection to SQLite database
-├── setClientPublicKey.php        - Records client\'s public key in database
+├── setClientPublicKey.php        - Records client\'s public key in session
+├── setSessionKey.php             - Records session key from client
 ├── database.db                   - SQLite database file
 ├── logout.php                    - To log the user out and redirect to login page.
 ├── functions.js                  - Contains JavaScripts functions for encryption and description and gererating client side RSA keys
 ├── rsa.js                        - RSA JavaScript Library
+├── des.js                        - DES JavaScript Library
 ├── sha256.js                     - SHA-256 JavaScript Library
 ├── .gitignore                    - What git to ignore when commiting
 └── README.md                     - This file ;)

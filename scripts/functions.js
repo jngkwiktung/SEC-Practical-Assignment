@@ -11,8 +11,6 @@ function hashPassword() {
 }
 
 function encryptUsnPass(publicKey) {
-    generatePrivatePublicKey(); // Generate client side rsa keys
-    sendPublicKey();
     let username = document.getElementById('username').value;
     let passwordHash = hashPassword();
 
@@ -104,4 +102,56 @@ function decryptImage(htmlId, ciphertext, prefix) {
     privateKey = sessionStorage.getItem("privateKey");
     decrypted = RSA_decryption(ciphertext, privateKey);
     document.getElementById(htmlId).src = prefix + decrypted;
+}
+
+function generateRandomDESKey() {
+    var length = 15;
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() *
+            charactersLength));
+    }
+    return result;
+}
+
+function sendDESKey(publicKey) {
+    desKey = sessionStorage.getItem("desKey");
+    let keyCiphertext = RSA_encryption(desKey, publicKey);
+    $.ajax({
+        url: '../setSessionKey.php',
+        type: 'POST',
+        data: { desKeyClient: keyCiphertext },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            alert("Error: Ajax cannot send client public key to server");
+        }
+    });
+}
+
+function establishKeys(publicKey) {
+    generatePrivatePublicKey(); // Generate client side rsa keys
+    sendPublicKey();
+    let desKey = generateRandomDESKey();
+    sessionStorage.setItem("desKey", desKey);
+    sendDESKey(publicKey);
+}
+
+function checkSessionKey(ciphertext) {
+    let desKey = sessionStorage.getItem("desKey");
+    let privateKey = sessionStorage.getItem("privateKey");
+    let decryptedKey = RSA_decryption(ciphertext, privateKey);
+    if (desKey !== decryptedKey) {
+        alert("Session timeout:\n\nSession ID between client and server are not the same or has been broken!\nRedirecting to login page.");
+        $.ajax({
+            url: '../login/index.php',
+            type: 'HEAD',
+            error: function() {
+                window.location = 'logout.php';
+            },
+            success: function() {
+                window.location = '../logout.php';
+            }
+        });
+    }
 }

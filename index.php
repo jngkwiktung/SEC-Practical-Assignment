@@ -5,10 +5,17 @@
 <?php require_once('includes/functions.inc.php'); ?>
 <?php require_once('crud/productCrud.php'); ?>
 <?php
-    $currentUser = getLoggedInUser();
-    $productCrud = new ProductCrud();
-    $products = $productCrud->readAll();
-    $encryptedUsername = encryptData($currentUser->getUsername(), $_SESSION[CLIENT_PUBLIC_KEY]);
+    // $_SESSION[DES_SESSION_KEY] = 'kjer';
+    if (isset($_SESSION[DES_SESSION_KEY])) {
+        $currentUser = getLoggedInUser();
+        $productCrud = new ProductCrud();
+        $products = $productCrud->readAll();
+        $encryptedUsername = encryptData($currentUser->getUsername(), $_SESSION[CLIENT_PUBLIC_KEY]);
+        $encryptedSessionKey = encryptData($_SESSION[DES_SESSION_KEY], $_SESSION[CLIENT_PUBLIC_KEY]);
+    } else {
+        header('Location: logout.php');
+        exit();
+    }
 
 ?>
 <!DOCTYPE html>
@@ -29,7 +36,7 @@
 
 </head>
 
-<body>
+<body onload="checkSessionKey(`<?php echo $encryptedSessionKey; ?>`)">
     <?php
         $results = "<script>document.write(results)</script>"
     ?>

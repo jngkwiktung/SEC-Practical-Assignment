@@ -3,6 +3,7 @@
     const PRIVATE_KEY = 'private_key';
     const PUBLIC_KEY = 'public_key';
     const CLIENT_PUBLIC_KEY = 'client_public_key';
+    const DES_SESSION_KEY = 'des_session_key';
     session_start();
 
 
@@ -32,11 +33,6 @@
         // Extract the public key
         $_SESSION[PUBLIC_KEY] = openssl_pkey_get_details($res)['key'];
 
-        // $data = 'test';
-        // openssl_public_encrypt($data, $encrypted, $_SESSION[PUBLIC_KEY]);
-        // echo base64_encode($encrypted) . '<br>';
-        // openssl_private_decrypt($encrypted, $decrypted, $_SESSION[PRIVATE_KEY]);
-        // echo $decrypted . '<br>';
     }
 
     function getPublicKey() {

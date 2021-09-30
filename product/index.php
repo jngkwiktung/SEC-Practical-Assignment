@@ -8,68 +8,74 @@
 <?php require_once('../crud/cartItemCrud.php'); ?>
 <?php require_once('../crud/orderCrud.php'); ?>
 <?php
-    $currentUser = getLoggedInUser();
-    $productCrud = new ProductCrud();
-    $shoppingCartCrud = new ShoppingCartCrud();
-    $cartItemCrud = new CartItemCrud();
-    $orderCrud = new OrderCrud();
-
-
-    openssl_private_decrypt(base64_decode(str_replace(' ', '+', $_GET['product'])), $decryptedProduct, $_SESSION[PRIVATE_KEY]);
-    $product = $productCrud->getProductById($decryptedProduct);
-
-    $currentCart = null;
-    $inCart = false;
-    $encryptedUsername = encryptData($currentUser->getUsername(), $_SESSION[CLIENT_PUBLIC_KEY]);
+    if (isset($_SESSION[DES_SESSION_KEY]))  {
+        $encryptedSessionKey = encryptData($_SESSION[DES_SESSION_KEY], $_SESSION[CLIENT_PUBLIC_KEY]);
+        $currentUser = getLoggedInUser();
+        $productCrud = new ProductCrud();
+        $shoppingCartCrud = new ShoppingCartCrud();
+        $cartItemCrud = new CartItemCrud();
+        $orderCrud = new OrderCrud();
     
-    if (isset($product)) {
-        $encryptedProductName = encryptData($product->getName(), $_SESSION[CLIENT_PUBLIC_KEY]);
-        $encryptedProductManufacturer = encryptData($product->getManufacturer(), $_SESSION[CLIENT_PUBLIC_KEY]);
-        $encryptedProductPrice = encryptData($product->getPrice(), $_SESSION[CLIENT_PUBLIC_KEY]);
-        $encryptedProductImage = encryptData($product->getImage(), $_SESSION[CLIENT_PUBLIC_KEY]);
-        $encryptedProductCategory = encryptData($product->getCategory(), $_SESSION[CLIENT_PUBLIC_KEY]);
-
-        $allCartsOfUser = $shoppingCartCrud->getCartsByUserId($currentUser->getUserId()); // Get all carts of current user
     
-        // Look for carts that is available, basically looking for a cart that does not have their transaction done yet/or in the order table
-        foreach($allCartsOfUser as $cart) {
-            if ($orderCrud->getOrderByCartId($cart->getCartId()) == null) {
-                $currentCart = $cart; // Assign 'current shopping cart' variable a shopping cart object
-            } 
-        }
-        // Now to look if this item is in the current shopping cart (CartItem table)
-        if (isset($currentCart) && $cartItemCrud->getOneCartItem($product->getProductId(), $currentCart->getCartId()) != null) {
-            $inCart = true;
-        }
-    }
-
-
-
-    $quantityError = false;
-    // For Post form...
-    if (isset($_POST['quantity']) && !$inCart) {
-        openssl_private_decrypt(base64_decode($_POST['quantity']), $decryptedQuantity, $_SESSION[PRIVATE_KEY]);
-        $quantitySplit = explode("&&&&&", $decryptedQuantity);
-        $userTimestamp = $quantitySplit[count($quantitySplit)-1];
-        $serverTimeStamp = time();
-        if(abs($serverTimeStamp - $userTimestamp) >= 150) {
-            echo("<p>Your session has expired</p>");
-            exit();
-        } else {
-            if (is_numeric($quantitySplit[0])) {
-                if (isset($currentCart)) {
-                    $cartItemCrud->create(new CartItem($product->getProductId(), $currentCart->getCartId(), $quantitySplit[0]));
-                } else {
-                    $randomNumber = rand();
-                    $shoppingCartCrud->create(new ShoppingCart($randomNumber, $currentUser->getUserId()));
-                    $cartItemCrud->create(new CartItem($product->getProductId(), $randomNumber, $quantitySplit[0]));
-                }
+        openssl_private_decrypt(base64_decode(str_replace(' ', '+', $_GET['product'])), $decryptedProduct, $_SESSION[PRIVATE_KEY]);
+        $product = $productCrud->getProductById($decryptedProduct);
+    
+        $currentCart = null;
+        $inCart = false;
+        $encryptedUsername = encryptData($currentUser->getUsername(), $_SESSION[CLIENT_PUBLIC_KEY]);
+        
+        if (isset($product)) {
+            $encryptedProductName = encryptData($product->getName(), $_SESSION[CLIENT_PUBLIC_KEY]);
+            $encryptedProductManufacturer = encryptData($product->getManufacturer(), $_SESSION[CLIENT_PUBLIC_KEY]);
+            $encryptedProductPrice = encryptData($product->getPrice(), $_SESSION[CLIENT_PUBLIC_KEY]);
+            $encryptedProductImage = encryptData($product->getImage(), $_SESSION[CLIENT_PUBLIC_KEY]);
+            $encryptedProductCategory = encryptData($product->getCategory(), $_SESSION[CLIENT_PUBLIC_KEY]);
+    
+            $allCartsOfUser = $shoppingCartCrud->getCartsByUserId($currentUser->getUserId()); // Get all carts of current user
+        
+            // Look for carts that is available, basically looking for a cart that does not have their transaction done yet/or in the order table
+            foreach($allCartsOfUser as $cart) {
+                if ($orderCrud->getOrderByCartId($cart->getCartId()) == null) {
+                    $currentCart = $cart; // Assign 'current shopping cart' variable a shopping cart object
+                } 
+            }
+            // Now to look if this item is in the current shopping cart (CartItem table)
+            if (isset($currentCart) && $cartItemCrud->getOneCartItem($product->getProductId(), $currentCart->getCartId()) != null) {
                 $inCart = true;
-
-            } else {
-                $quantityError = true;
             }
         }
+    
+    
+    
+        $quantityError = false;
+        // For Post form...
+        if (isset($_POST['quantity']) && !$inCart) {
+            openssl_private_decrypt(base64_decode($_POST['quantity']), $decryptedQuantity, $_SESSION[PRIVATE_KEY]);
+            $quantitySplit = explode("&&&&&", $decryptedQuantity);
+            $userTimestamp = $quantitySplit[count($quantitySplit)-1];
+            $serverTimeStamp = time();
+            if(abs($serverTimeStamp - $userTimestamp) >= 150) {
+                echo("<p>Your session has expired</p>");
+                exit();
+            } else {
+                if (is_numeric($quantitySplit[0])) {
+                    if (isset($currentCart)) {
+                        $cartItemCrud->create(new CartItem($product->getProductId(), $currentCart->getCartId(), $quantitySplit[0]));
+                    } else {
+                        $randomNumber = rand();
+                        $shoppingCartCrud->create(new ShoppingCart($randomNumber, $currentUser->getUserId()));
+                        $cartItemCrud->create(new CartItem($product->getProductId(), $randomNumber, $quantitySplit[0]));
+                    }
+                    $inCart = true;
+    
+                } else {
+                    $quantityError = true;
+                }
+            }
+        }
+    } else {
+        header('Location: ../logout.php');
+        exit();
     }
 
 ?>
@@ -92,7 +98,7 @@
 
 </head>
 
-<body>
+<body onload="checkSessionKey(`<?php echo $encryptedSessionKey; ?>`)">
     <!--Header-->
     <div class="header">
         <div class="container">

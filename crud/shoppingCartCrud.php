@@ -13,6 +13,22 @@
             }
         }
 
+        public function readAll() {
+            try {
+                $carts = [];
+                $pdo = (new SQLConnection())->connect();
+                $sql = "SELECT * FROM SHOPPINGCART";
+                $result = $pdo->query($sql);
+                foreach ($result as $row) {
+                    array_push($carts, new ShoppingCart($row["CART_ID"], $row["USER_ID"]));
+                }
+                return $carts;
+            } catch (Exception $e) {
+                error_log($e->getMessage());
+                return [];
+            }
+        }
+
         public function delete(ShoppingCart $shoppingCart) {
             try {
                 $pdo = (new SQLConnection())->connect();

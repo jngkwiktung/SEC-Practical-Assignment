@@ -2,48 +2,53 @@
 <?php require_once('../includes/functions.inc.php'); ?>
 <?php require_once('../model/user.php'); ?>
 <?php
-    if (!isset($_SESSION[PRIVATE_KEY]) && !isset($_SESSION[PUBLIC_KEY])) {
-        generatePrivatePublicKey();
-    }
-    $usernameExistsError = false;
-    $usernameLengthError = false;
-    $usernameNull = false;
-    $passwordNull = false;
-    if(isset($_POST['register'])) {
-        $userCrud = new UserCrud();
-        openssl_private_decrypt(base64_decode($_POST['username']), $decryptedUsername, $_SESSION[PRIVATE_KEY]);
-        openssl_private_decrypt(base64_decode($_POST['pw']), $decryptedPassword, $_SESSION[PRIVATE_KEY]);
-        $passwordSplit = explode("&&&&&", $decryptedPassword);
-        $userTimestamp = $passwordSplit[count($passwordSplit)-1];
-        $serverTimeStamp = time();
-        if ($decryptedUsername == '') {
-            $usernameNull = true;
+    if (!isUserLoggedIn()) {
+        if (!isset($_SESSION[PRIVATE_KEY]) && !isset($_SESSION[PUBLIC_KEY])) {
+            generatePrivatePublicKey();
         }
-        if ($passwordSplit[0] == '') {
-            $passwordNull = true;
-        }
-        if(abs($serverTimeStamp - $userTimestamp) >= 150) {
-            echo("<p>Your session has expired</p>");
-            exit();
-        } else {
-            if (!$usernameNull && !$passwordNull) {
-                if (strlen($decryptedUsername) <= 20) {
-                    if (!$userCrud->usernameExists(htmlspecialchars(trim($decryptedUsername)))) {
-                        $randomNumber = rand();
-                        $currentUser = new User($randomNumber, htmlspecialchars(trim($decryptedUsername)), $passwordSplit[0], false);
-                        $userCrud->create($currentUser);
-                        $_SESSION[USER_SESSION_KEY] = $currentUser;
-                        header('Location: ../');
-                        exit();
+        $usernameExistsError = false;
+        $usernameLengthError = false;
+        $usernameNull = false;
+        $passwordNull = false;
+        if(isset($_POST['register'])) {
+            $userCrud = new UserCrud();
+            openssl_private_decrypt(base64_decode($_POST['username']), $decryptedUsername, $_SESSION[PRIVATE_KEY]);
+            openssl_private_decrypt(base64_decode($_POST['pw']), $decryptedPassword, $_SESSION[PRIVATE_KEY]);
+            $passwordSplit = explode("&&&&&", $decryptedPassword);
+            $userTimestamp = $passwordSplit[count($passwordSplit)-1];
+            $serverTimeStamp = time();
+            if ($decryptedUsername == '') {
+                $usernameNull = true;
+            }
+            if ($passwordSplit[0] == '') {
+                $passwordNull = true;
+            }
+            if(abs($serverTimeStamp - $userTimestamp) >= 150) {
+                echo("<p>Your session has expired</p>");
+                exit();
+            } else {
+                if (!$usernameNull && !$passwordNull) {
+                    if (strlen($decryptedUsername) <= 20) {
+                        if (!$userCrud->usernameExists(htmlspecialchars(trim($decryptedUsername)))) {
+                            $randomNumber = rand();
+                            $currentUser = new User($randomNumber, htmlspecialchars(trim($decryptedUsername)), $passwordSplit[0], false);
+                            $userCrud->create($currentUser);
+                            $_SESSION[USER_SESSION_KEY] = $currentUser;
+                            header('Location: ../');
+                            exit();
+                        } else {
+                            $usernameExistsError = true;
+                        }
                     } else {
-                        $usernameExistsError = true;
+                        $usernameLengthError = true;
                     }
-                } else {
-                    $usernameLengthError = true;
                 }
             }
+            
         }
-        
+    } else {
+        header('Location: ../');
+        exit();
     }
 ?>
 
@@ -62,7 +67,7 @@
     <script type="text/javascript" src="../scripts/functions.js"></script>
 </head>
 
-<body>
+<body onload="establishKeys(`<?php echo getPublicKey();?>`)">
     <header>
         <br>
         <h1 class="noselect"><b>Register</b></h1>

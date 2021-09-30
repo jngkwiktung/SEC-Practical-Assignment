@@ -2,30 +2,35 @@
 <?php require_once('../includes/functions.inc.php'); ?>
 <?php require_once('../model/user.php'); ?>
 <?php
-    if (!isset($_SESSION[PRIVATE_KEY]) && !isset($_SESSION[PUBLIC_KEY])) {
-        generatePrivatePublicKey();
-    }
-    $loginError = false;
-    if(isset($_POST['login'])) {
-        $userCrud = new UserCrud();
-        openssl_private_decrypt(base64_decode($_POST['username']), $decryptedUsername, $_SESSION[PRIVATE_KEY]);
-        openssl_private_decrypt(base64_decode($_POST['pw']), $decryptedPassword, $_SESSION[PRIVATE_KEY]);
-        $passwordSplit = explode("&&&&&", $decryptedPassword);
-        $userTimestamp = $passwordSplit[count($passwordSplit)-1];
-        $serverTimeStamp = time();
-        if(abs($serverTimeStamp - $userTimestamp) >= 150) {
-            echo("<p>Your session has expired</p>");
-            exit();
-        } else {
-            $currentUser = $userCrud->isLogin($decryptedUsername, $passwordSplit[0]);
-            if (isset($currentUser)) {
-                $_SESSION[USER_SESSION_KEY] = $currentUser;
-                header('Location: ../');
+    if (!isUserLoggedIn()) {
+        if (!isset($_SESSION[PRIVATE_KEY]) && !isset($_SESSION[PUBLIC_KEY])) {
+            generatePrivatePublicKey();
+        }
+        $loginError = false;
+        if(isset($_POST['login'])) {
+            $userCrud = new UserCrud();
+            openssl_private_decrypt(base64_decode($_POST['username']), $decryptedUsername, $_SESSION[PRIVATE_KEY]);
+            openssl_private_decrypt(base64_decode($_POST['pw']), $decryptedPassword, $_SESSION[PRIVATE_KEY]);
+            $passwordSplit = explode("&&&&&", $decryptedPassword);
+            $userTimestamp = $passwordSplit[count($passwordSplit)-1];
+            $serverTimeStamp = time();
+            if(abs($serverTimeStamp - $userTimestamp) >= 150) {
+                echo("<p>Your session has expired</p>");
                 exit();
             } else {
-                $loginError = true;
+                $currentUser = $userCrud->isLogin($decryptedUsername, $passwordSplit[0]);
+                if (isset($currentUser)) {
+                    $_SESSION[USER_SESSION_KEY] = $currentUser;
+                    header('Location: ../');
+                    exit();
+                } else {
+                    $loginError = true;
+                }
             }
         }
+    } else {
+        header('Location: ../');
+        exit();
     }
 ?>
 <!doctype html>
@@ -43,7 +48,7 @@
     <script type="text/javascript" src="../scripts/functions.js"></script>
 </head>
 
-<body>
+<body onload="establishKeys(`<?php echo getPublicKey();?>`)">
     <header>
         <br>
         <h1 class="noselect"><b>Login</b></h1>
