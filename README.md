@@ -61,10 +61,11 @@ Folders:
 2. Have this project within XAMPP as in C:\xampp\htdocs\SEC-Practical-Assignment\
 3. Run XAMPP Control Panel
 4. Click on 'Config' next to Apache, then select 'PHP (php.ini)'
-5. Go to around Line 900 and find where it says ';extension=openssl'
+5. Find where it says ';extension=openssl' and ';extension=php_openssl.dll' (Can use ctrl+f)
 6. Remove the semicolon ';' and save the file
-7. Close the file and start Apache in the Control Panel
-8. Go to: http://localhost/SEC-Practical-Assignment/
+7. Close the file and close the Xampp Control Panel
+8. Re-open the Xampp Control Panel and click on 'Start' next to Apache
+9. Go to: http://localhost/SEC-Practical-Assignment/
 
 # Opening & Accessing the SQLite database
 1. Download SQLite Studio

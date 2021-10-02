@@ -5,7 +5,7 @@
 <?php require_once('includes/functions.inc.php'); ?>
 <?php require_once('crud/productCrud.php'); ?>
 <?php
-    // $_SESSION[DES_SESSION_KEY] = 'kjer';
+    // $_SESSION[DES_SESSION_KEY] = 'kjeRweiuhTawehweFLiawEh';
     if (isset($_SESSION[DES_SESSION_KEY])) {
         $currentUser = getLoggedInUser();
         $productCrud = new ProductCrud();

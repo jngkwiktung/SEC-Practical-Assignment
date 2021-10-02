@@ -155,3 +155,29 @@ function checkSessionKey(ciphertext) {
         });
     }
 }
+
+
+var calcSubTotal = function(productName) {
+    var quantity = parseInt(document.getElementById(productName + 'quantity').value);
+    if (quantity > 0) {
+        var price = parseInt(document.getElementById(productName + 'price').value);
+        var subtotal = price * quantity;
+        document.getElementById(productName + "subtotal").innerHTML = subtotal;
+        document.getElementById(productName + "total").value = subtotal;
+        return subtotal;
+    }
+    document.getElementById(productName + "subtotal").innerHTML = 0;
+    document.getElementById(productName + "total").value = 0;
+    return 0;
+}
+
+function updateCart() {
+    var total = calcSubTotal('ProductA') + calcSubTotal('ProductB') + calcSubTotal('ProductC');
+    var quantity = parseInt(document.getElementById('ProductAquantity').value) +
+        parseInt(document.getElementById('ProductBquantity').value) +
+        parseInt(document.getElementById('ProductCquantity').value);
+    document.getElementById("Quantity").innerHTML = quantity;
+    document.getElementById("totalQuantity").value = quantity;
+    document.getElementById("Price").innerHTML = total;
+    document.getElementById("totalPrice").value = total;
+}
