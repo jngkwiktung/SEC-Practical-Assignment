@@ -73,7 +73,7 @@ class OrderCrud
     public function getOrderByCartId($cartId) {
         try {
             $pdo = (new SQLConnection())->connect();
-            $stmt = $pdo->prepare("SELECT * FROM ORDER WHERE CART_ID = ?");
+            $stmt = $pdo->prepare("SELECT * FROM [ORDER] WHERE CART_ID = ?");
             $stmt->execute([$cartId]);
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 return new Order($row["ORDER_ID"], $row["CART_ID"], $row["TOTAL"], $row["ADDRESS"], $row["CREDIT_CARD"], $row["TIMESTAMP"]);

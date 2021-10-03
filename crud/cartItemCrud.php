@@ -57,7 +57,6 @@ require_once('../model/cartItem.php');
                 $sql = "SELECT * FROM CARTITEM WHERE CART_ID = " . $cartId;
                 $result = $pdo->query($sql);
                 foreach ($result as $row) {
-                    // echo "USER_ID: " . $row["USER_ID"]. " - USERNAME: " . $row["USERNAME"]. " " . $row["PASSWORD"]. "<br>";
                     $items[$row["PRODUCT_ID"]] = new CartItem($row["PRODUCT_ID"], $row["CART_ID"], $row["QUANTITY"]);
                 }
                 return $items;

@@ -52,17 +52,17 @@ function generatePrivatePublicKey() {
     var crypt = new JSEncrypt({ default_key_size: keySize });
 
     crypt.getKey();
-    sessionStorage.setItem("privateKey", crypt.getPrivateKey());
-    sessionStorage.setItem("publicKey", crypt.getPublicKey());
+    localStorage.setItem("privateKey", crypt.getPrivateKey());
+    localStorage.setItem("publicKey", crypt.getPublicKey());
 }
 
 function removePrivatePublicKey() {
-    sessionStorage.removeItem("privateKey");
-    sessionStorage.removeItem("publicKey");
+    localStorage.removeItem("privateKey");
+    localStorage.removeItem("publicKey");
 }
 
 function sendPublicKey() {
-    publicKey = sessionStorage.getItem("publicKey");
+    publicKey = localStorage.getItem("publicKey");
     $.ajax({
         url: '../setClientPublicKey.php',
         type: 'POST',
@@ -74,14 +74,14 @@ function sendPublicKey() {
 }
 
 function decryptData(htmlId, ciphertext, prefix) {
-    privateKey = sessionStorage.getItem("privateKey");
+    privateKey = localStorage.getItem("privateKey");
     decrypted = RSA_decryption(ciphertext, privateKey);
     document.getElementById(htmlId).innerHTML = prefix + decrypted;
 }
 
-function encryptProductLink(htmlId, message, publicKey) {
+function encryptProductLink(htmlId, message, publicKey, prefix) {
     let encrypted = RSA_encryption(message, publicKey);
-    document.getElementById(htmlId).href = "product/?product=" + encrypted;
+    document.getElementById(htmlId).href = prefix + encrypted;
 }
 
 function encryptProduct(message, publicKey) {
@@ -99,7 +99,7 @@ function encryptSendQuantity(publicKey) {
 }
 
 function decryptImage(htmlId, ciphertext, prefix) {
-    privateKey = sessionStorage.getItem("privateKey");
+    privateKey = localStorage.getItem("privateKey");
     decrypted = RSA_decryption(ciphertext, privateKey);
     document.getElementById(htmlId).src = prefix + decrypted;
 }
@@ -117,7 +117,7 @@ function generateRandomDESKey() {
 }
 
 function sendDESKey(publicKey) {
-    desKey = sessionStorage.getItem("desKey");
+    desKey = localStorage.getItem("desKey");
     let keyCiphertext = RSA_encryption(desKey, publicKey);
     $.ajax({
         url: '../setSessionKey.php',
@@ -133,13 +133,13 @@ function establishKeys(publicKey) {
     generatePrivatePublicKey(); // Generate client side rsa keys
     sendPublicKey();
     let desKey = generateRandomDESKey();
-    sessionStorage.setItem("desKey", desKey);
+    localStorage.setItem("desKey", desKey);
     sendDESKey(publicKey);
 }
 
 function checkSessionKey(ciphertext) {
-    let desKey = sessionStorage.getItem("desKey");
-    let privateKey = sessionStorage.getItem("privateKey");
+    let desKey = localStorage.getItem("desKey");
+    let privateKey = localStorage.getItem("privateKey");
     let decryptedKey = RSA_decryption(ciphertext, privateKey);
     if (desKey !== decryptedKey) {
         alert("Session timeout:\n\nSession ID between client and server are not the same or has been broken!\nRedirecting to login page.");
@@ -160,9 +160,9 @@ function checkSessionKey(ciphertext) {
 var calcSubTotal = function(productName) {
     var quantity = parseInt(document.getElementById(productName + 'quantity').value);
     if (quantity > 0) {
-        var price = parseInt(document.getElementById(productName + 'price').value);
+        var price = parseFloat(document.getElementById(productName + 'price').value);
         var subtotal = price * quantity;
-        document.getElementById(productName + "subtotal").innerHTML = subtotal;
+        document.getElementById(productName + "subtotal").innerHTML = '$' + subtotal;
         document.getElementById(productName + "total").value = subtotal;
         return subtotal;
     }
@@ -171,13 +171,56 @@ var calcSubTotal = function(productName) {
     return 0;
 }
 
-function updateCart() {
-    var total = calcSubTotal('ProductA') + calcSubTotal('ProductB') + calcSubTotal('ProductC');
-    var quantity = parseInt(document.getElementById('ProductAquantity').value) +
-        parseInt(document.getElementById('ProductBquantity').value) +
-        parseInt(document.getElementById('ProductCquantity').value);
-    document.getElementById("Quantity").innerHTML = quantity;
+function updateCart(ciphertext) {
+    privateKey = localStorage.getItem("privateKey");
+    size = RSA_decryption(ciphertext, privateKey);
+    var price = null;
+    var total = null;
+    var quantity = null;
+    for (let i = 0; i < size; i++) {
+        price += parseFloat(document.getElementById('Product' + i + 'price').value);
+        total += calcSubTotal('Product' + i);
+        quantity += parseInt(document.getElementById('Product' + i + 'quantity').value);
+    }
+
+    document.getElementById("pPrice").innerHTML = '$' + price;
+    document.getElementById("ptotalQuantity").innerHTML = quantity;
     document.getElementById("totalQuantity").value = quantity;
-    document.getElementById("Price").innerHTML = total;
+    document.getElementById("ptotalPrice").innerHTML = '$' + total;
     document.getElementById("totalPrice").value = total;
+}
+
+function setCartInputValue(htmlId, ciphertext) {
+    privateKey = localStorage.getItem("privateKey");
+    decrypted = RSA_decryption(ciphertext, privateKey);
+    document.getElementById(htmlId).value = decrypted;
+}
+
+function emptyCart(publicKey) {
+    // r = confirm('Are you sure you want to empty your cart?')
+    if (confirm('Are you sure you want to empty your cart?')) {
+        let cartId = document.getElementById("cartId").value;
+        let timestamp = Math.floor(new Date().getTime() / 1000);
+        let plaintext = cartId + "&&&&&" + timestamp;
+        let ciphertext = RSA_encryption(plaintext, publicKey);
+        document.getElementById("emptyCartInput").value = ciphertext;
+    }
+}
+
+function placeOrder(publicKey, ciphertext) {
+    privateKey = localStorage.getItem("privateKey");
+    size = RSA_decryption(ciphertext, privateKey);
+    cartId = document.getElementById("cartId").value;
+    address = document.getElementById("addressInput").value;
+    cardNum = document.getElementById("creditCardInput").value;
+    timestamp = Math.floor(new Date().getTime() / 1000);
+    totalPrice = document.getElementById("totalPrice").value;
+    plaintext = cartId + "&&&&&" + timestamp + "&&&&&" + address + "&&&&&" + cardNum + "&&&&&" + totalPrice;
+    for (let i = 0; i < size; i++) {
+        productId = document.getElementById("Product" + i).value;
+        productQuantity = document.getElementById("Product" + i + "quantity").value;
+        plaintext += "&&&&&" + productId + "&&&&&" + productQuantity;
+    }
+    ciphertext = RSA_encryption(plaintext, publicKey);
+    document.getElementById("placeOrderInput").value = ciphertext;
 }

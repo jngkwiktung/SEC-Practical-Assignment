@@ -8,7 +8,7 @@
 <?php
 if (isset($_GET["order_id"])) {
     // TODO DATE CONVERSION FOR ORDER
-    $orderId = $_GET["order_id"];
+    openssl_private_decrypt(base64_decode(str_replace(' ', '+', $_GET["order_id"])), $orderId, $_SESSION[PRIVATE_KEY]);
     $orderCrud = new OrderCrud();
     $cartItemCrud = new CartItemCrud();
     $productCrud = new ProductCrud();

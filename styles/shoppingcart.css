@@ -227,3 +227,50 @@ input[type=number] {
     border: 2px solid #7c7c7c;
     border-radius: 9pt;
 }
+
+input[type=text] {
+    width: 92%;
+    padding: 6pt;
+    margin-bottom: 10pt;
+    border: 2px solid #7c7c7c;
+    border-radius: 9pt;
+}
+
+label {
+    padding: 12pt 13pt 12pt 0;
+    display: inline-block;
+}
+
+.secondcol {
+    width: 70%;
+    float: left;
+    margin-top: 15pt;
+}
+
+.firstcol {
+    width: 30%;
+    float: left;
+    text-align: left;
+    margin-top: 8pt;
+}
+
+.aftercol:after {
+    display: table;
+    content: "";
+    clear: both;
+}
+
+.formcontainer {
+    box-shadow: 0 0 100px rgb(180, 180, 180);
+    padding: 20pt;
+    border-radius: 5pt;
+    max-width: 400pt;
+    min-width: 400pt;
+    margin: auto;
+}
+
+.error {
+    color: #fd2600;
+    padding: 5pt 5pt 0 0;
+    font-size: medium;
+}

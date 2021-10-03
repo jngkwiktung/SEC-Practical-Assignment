@@ -100,7 +100,7 @@
                     <p id="productPrice<?php echo $i; ?>"></p>
                 </div>
                 <script>
-                    encryptProductLink("product<?php echo $i; ?>", "<?php echo $product->getProductId(); ?>", `<?php echo getPublicKey();?>`);
+                    encryptProductLink("product<?php echo $i; ?>", "<?php echo $product->getProductId(); ?>", `<?php echo getPublicKey();?>`, 'product/?product=');
                     decryptImage('productImage<?php echo $i; ?>', '<?php echo $encryptedProductImage; ?>', 'images/');
                     decryptData('productName<?php echo $i; ?>', '<?php echo $encryptedProductName; ?>', '');
                     decryptData('productPrice<?php echo $i; ?>', '<?php echo $encryptedProductPrice; ?>', '$');
