@@ -115,7 +115,7 @@ if (isset($_GET["order_id"])) {
                     </thead>
                     <tbody>
                         <td>#<?php echo $order->getOrderId() ?></td>
-                        <td>September 20, 2021</td>
+                        <td><?php echo date('d M Y', $order->getTimestamp()) ?></td>
                         <td>$<?php echo number_format($order->getTotal(), 2) ?></td>
                         <td>Credit Card</td>
                     </tbody>
