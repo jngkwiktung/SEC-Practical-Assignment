@@ -275,7 +275,7 @@ Possible bonus tasks:
         setCartInputValue('cartId', '<?php echo $encryptedCartId; ?>');
     </script>
     <?php } else { ?>
-        <div class="aligncenter">You nothing in your shopping cart</div>
+        <div class="aligncenter">You have nothing in your shopping cart</div>
     <?php } ?>
 </body>
 <script>
