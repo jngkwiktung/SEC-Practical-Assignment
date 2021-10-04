@@ -56,6 +56,9 @@ Folders:
  - An order cannot have many shopping carts but one only
  - A shopping cart can exist without an associated order
 
+# Data Flowchart
+![img.png](images/sec_data_flowchart.png)
+
 # Running the code
 1. Download XAMPP
 2. Have this project within XAMPP as in C:\xampp\htdocs\SEC-Practical-Assignment\
