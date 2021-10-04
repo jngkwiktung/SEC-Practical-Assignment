@@ -41,7 +41,7 @@ if (isset($_GET["order_id"]) && isset($_SESSION[DES_SESSION_KEY])) {
     <script type="text/javascript" src="../scripts/functions.js"></script>
 </head>
 
-<body class="content">
+<body class="content" onload="checkSessionKey(`<?php echo $encryptedSessionKey; ?>`)">
     <div class="header">
         <div class="container">
             <div class="navbar">
@@ -164,10 +164,7 @@ if (isset($_GET["order_id"]) && isset($_SESSION[DES_SESSION_KEY])) {
                         <div class="total__label">Total</div>
                         <div class="total__value">$<span id="order-total-bottom"></span></div>
                     </div>
-                    <form id="logoutForm" action="/SEC-Practical-Assignment/logout.php" method="post" class="cta-form flex-center flex-align-center">
-                        <!-- <input name="logout" id="logout" type="submit" value="Logout" class="btn"> -->
-                        <button class="btn">Order Again</button>
-                    </form>
+                    <a href="../"><button class="btn">Go back to catalog</button></a>
                 </div>
             </div>
         </div>
@@ -176,6 +173,7 @@ if (isset($_GET["order_id"]) && isset($_SESSION[DES_SESSION_KEY])) {
     <footer>
         <p>&copy; 2021 Jeremy Ng Kwik Tung, Steven Harja, Wilbert Ongosari & Aman Khan</p>
     </footer>
+    <br>
 </body>
 <script>
     decryptData('usernameOrder', '<?php echo $encryptedUsername; ?>', '');

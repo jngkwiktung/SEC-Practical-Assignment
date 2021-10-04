@@ -27,7 +27,6 @@
                 $sql = "SELECT * FROM USER";
                 $result = $pdo->query($sql);
                 foreach ($result as $row) {
-                    // echo "USER_ID: " . $row["USER_ID"]. " - USERNAME: " . $row["USERNAME"]. " " . $row["PASSWORD"]. "<br>";
                     array_push($users, new User($row["USER_ID"], $row["USERNAME"], $row["PASSWORD"]));
                 }
                 return $users;
