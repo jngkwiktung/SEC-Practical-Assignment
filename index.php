@@ -55,7 +55,7 @@
                     <ul>
                         <li>Welcome '<span id="usernameHome"></span>'!</li>
                         <li><a href="">Home</a></li>
-                        <li><a href="">Account</a></li>
+                        <li><a href="account/">Account</a></li>
                         <li>
                             <form id="logoutForm" action="logout.php" method="post">
                                 <input name="logout" id="logout" type="submit" value="Logout" onclick="removePrivatePublicKey()">
