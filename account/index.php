@@ -73,12 +73,12 @@
 
                     <br><br>
                     <h3><b>Password:</b></h3>
-                    <input type="text" name="password"> <br>
+                    <input type="password" id="password" name="password"> <br>
 
                     <a href="">
                         <p>Change Password?</p>
                     </a> <br>
-                    
+
                     <h3><b>Firstname:</b></h3>
                     <input type="text" name="fname"> <br><br>
 
